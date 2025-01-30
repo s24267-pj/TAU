@@ -18,7 +18,7 @@ def generate_board(A, B):
         if board[x][y] == ' ':
             board[x][y] = 'X'
 
-    return board, start, stop
+    return board, start, stop,
 
 
 def display_board(board):
@@ -27,30 +27,15 @@ def display_board(board):
     print()
 
 
-def move_up(position, board):
+def move(position, direction, board):
     x, y = position
-    if x > 0 and board[x - 1][y] != 'X':
+    if direction == 'up' and x > 0 and board[x - 1][y] != 'X':
         return x - 1, y
-    return position
-
-
-def move_down(position, board):
-    x, y = position
-    if x < len(board) - 1 and board[x + 1][y] != 'X':
+    elif direction == 'down' and x < len(board) - 1 and board[x + 1][y] != 'X':
         return x + 1, y
-    return position
-
-
-def move_left(position, board):
-    x, y = position
-    if y > 0 and board[x][y - 1] != 'X':
+    elif direction == 'left' and y > 0 and board[x][y - 1] != 'X':
         return x, y - 1
-    return position
-
-
-def move_right(position, board):
-    x, y = position
-    if y < len(board[0]) - 1 and board[x][y + 1] != 'X':
+    elif direction == 'right' and y < len(board[0]) - 1 and board[x][y + 1] != 'X':
         return x, y + 1
     return position
 
@@ -62,29 +47,33 @@ def display_board_with_position(board, position):
     display_board(board_with_player)
 
 
+def is_path_possible(start, stop, board):
+    visited = set()
+
+    def dfs(x, y):
+        if (x, y) == stop:
+            return True
+        if (x, y) in visited or x < 0 or y < 0 or x >= len(board) or y >= len(board[0]) or board[x][y] == 'X':
+            return False
+        visited.add((x, y))
+        return any(dfs(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)])
+
+    return dfs(start[0], start[1])
+
+
 def play_game(board, start, stop):
     position = start
     print("Początkowa pozycja:", position)
 
     while position != stop:
         display_board_with_position(board, position)
-        move = input("Podaj ruch (up, down, left, right): ").strip().lower()
-        if move == 'up':
-            new_position = move_up(position, board)
-        elif move == 'down':
-            new_position = move_down(position, board)
-        elif move == 'left':
-            new_position = move_left(position, board)
-        elif move == 'right':
-            new_position = move_right(position, board)
-        else:
-            print("Nieprawidłowy ruch! Spróbuj ponownie.")
-            continue
+        move_direction = input("Podaj ruch (up, down, left, right): ").strip().lower()
+        position = move(position, move_direction, board)
 
-        if new_position == position:
+        if position == start:
             print("Nie można wykonać ruchu. Spróbuj ponownie.")
         else:
-            position = new_position
+            start = position
 
     print("Gratulacje! Dotarłeś do celu!")
 
