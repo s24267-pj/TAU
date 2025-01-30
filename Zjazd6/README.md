@@ -1,4 +1,4 @@
-# Zjazd 6
+# Zjazd 6 - Laboratorium 5 - API
 
 
 ## Wymagania
@@ -8,6 +8,7 @@
 - pytest
 - httpx
 - uvicorn
+- email-validator
 
 
 ## Uruchamianie aplikacji
